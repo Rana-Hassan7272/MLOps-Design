@@ -18,7 +18,17 @@
 
 *Designed as a capstone demonstrating ML engineering depth, MLOps platform breadth, and end-to-end production deployment capability.*
 
+**Full demo (end-to-end walkthrough):** [https://tinyurl.com/mlops-full-system](https://tinyurl.com/mlops-full-system)
+
 </div>
+
+---
+
+## Full Demo Video
+
+End-to-end demonstration of this project — data pipeline, training, MLflow tracking, model serving, monitoring, and deployment.
+
+**Watch:** [MLOps Full System Demo](https://tinyurl.com/mlops-full-system)
 
 ---
 
@@ -41,24 +51,25 @@ This platform implements what a real ML engineering team builds and maintains in
 
 ## Table of Contents
 
-1. [Business Goal](#business-goal)
-2. [Tech Stack](#tech-stack)
-3. [System Architecture](#system-architecture)
-4. [Repository Structure](#repository-structure)
-5. [Phase-by-Phase Implementation](#phase-by-phase-implementation)
-6. [Algorithms Built From Scratch — Deep Dive](#algorithms-built-from-scratch--deep-dive)
-7. [Detailed Experiment Results & Analysis](#detailed-experiment-results--analysis)
-8. [Benchmark Protocol](#benchmark-protocol)
-9. [MLflow Tracking & Model Registry](#mlflow-tracking--model-registry)
-10. [FastAPI Model Serving](#fastapi-model-serving)
-11. [A/B Testing & Experiment Management](#ab-testing--experiment-management)
-12. [CI/CD Pipeline](#cicd-pipeline)
-13. [Monitoring, Drift Detection & Alerting](#monitoring-drift-detection--alerting)
-14. [Automatic Retraining with Prefect](#automatic-retraining-with-prefect)
-15. [Docker & Kubernetes Deployment](#docker--kubernetes-deployment)
-16. [AWS Production Deployment](#aws-production-deployment)
-17. [How to Run](#how-to-run)
-18. [Screenshot Walkthrough](#screenshot-walkthrough)
+1. [Full Demo Video](#full-demo-video)
+2. [Business Goal](#business-goal)
+3. [Tech Stack](#tech-stack)
+4. [System Architecture](#system-architecture)
+5. [Repository Structure](#repository-structure)
+6. [Phase-by-Phase Implementation](#phase-by-phase-implementation)
+7. [Algorithms Built From Scratch — Deep Dive](#algorithms-built-from-scratch--deep-dive)
+8. [Detailed Experiment Results & Analysis](#detailed-experiment-results--analysis)
+9. [Benchmark Protocol](#benchmark-protocol)
+10. [MLflow Tracking & Model Registry](#mlflow-tracking--model-registry)
+11. [FastAPI Model Serving](#fastapi-model-serving)
+12. [A/B Testing & Experiment Management](#ab-testing--experiment-management)
+13. [CI/CD Pipeline](#cicd-pipeline)
+14. [Monitoring, Drift Detection & Alerting](#monitoring-drift-detection--alerting)
+15. [Automatic Retraining with Prefect](#automatic-retraining-with-prefect)
+16. [Docker & Kubernetes Deployment](#docker--kubernetes-deployment)
+17. [AWS Production Deployment](#aws-production-deployment)
+18. [How to Run](#how-to-run)
+19. [Screenshot Walkthrough](#screenshot-walkthrough)
 
 ---
 
