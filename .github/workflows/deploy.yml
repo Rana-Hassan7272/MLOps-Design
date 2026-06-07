@@ -2,8 +2,12 @@ name: Deploy MLOps to AWS
 
 on:
   push:
-    branches: [main, clean-main2]
+    branches: [main]
   workflow_dispatch:
+
+concurrency:
+  group: deploy-lambda-mlops-hassan-api
+  cancel-in-progress: false
 
 env:
   AWS_REGION: us-east-1
@@ -63,12 +67,71 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          aws lambda update-function-code \
-            --function-name $LAMBDA_FUNCTION \
-            --image-uri $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          aws lambda wait function-updated \
-            --function-name $LAMBDA_FUNCTION
-          echo "✅ Lambda updated successfully"
+          set -euo pipefail
+
+          wait_for_lambda_ready() {
+            for i in $(seq 1 36); do
+              STATUS=$(aws lambda get-function-configuration \
+                --function-name "$LAMBDA_FUNCTION" \
+                --query 'LastUpdateStatus' \
+                --output text)
+              STATE=$(aws lambda get-function-configuration \
+                --function-name "$LAMBDA_FUNCTION" \
+                --query 'State' \
+                --output text)
+
+              if [ "$STATUS" = "Failed" ]; then
+                echo "Lambda LastUpdateStatus=Failed"
+                return 1
+              fi
+
+              if [ "$STATE" = "Active" ] && { [ "$STATUS" = "Successful" ] || [ "$STATUS" = "None" ]; }; then
+                return 0
+              fi
+
+              echo "Waiting for Lambda readiness (attempt $i/36): State=$STATE LastUpdateStatus=$STATUS"
+              sleep 10
+            done
+
+            echo "Timed out waiting for Lambda to become ready"
+            return 1
+          }
+
+          update_lambda_with_retry() {
+            IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+            for attempt in 1 2 3 4 5 6; do
+              wait_for_lambda_ready
+
+              set +e
+              OUTPUT=$(aws lambda update-function-code \
+                --function-name "$LAMBDA_FUNCTION" \
+                --image-uri "$IMAGE_URI" 2>&1)
+              RC=$?
+              set -e
+
+              if [ $RC -eq 0 ]; then
+                echo "$OUTPUT"
+                return 0
+              fi
+
+              if echo "$OUTPUT" | grep -q "ResourceConflictException"; then
+                echo "Lambda update conflict on attempt $attempt; retrying after wait..."
+                sleep $((attempt * 15))
+                continue
+              fi
+
+              echo "$OUTPUT"
+              return $RC
+            done
+
+            echo "Failed to update Lambda after retries"
+            return 1
+          }
+
+          update_lambda_with_retry
+          aws lambda wait function-updated --function-name "$LAMBDA_FUNCTION"
+          aws lambda wait function-active --function-name "$LAMBDA_FUNCTION"
+          echo "Lambda updated successfully"
 
       - name: Verify deployment
         run: |
